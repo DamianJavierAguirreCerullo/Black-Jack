@@ -1,41 +1,29 @@
-﻿
-
-// var cards = [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9, 10, 10, 10, 10, 11, 11, 11, 11, 12, 12, 12, 12, 13, 13, 13, 13];
-
-//string message = "";
-
-//var myCards = 2;
-
-//switch(myCards)
-//{
-//    case 1:
-//        message = "one";
-//        break;
-
-//    case 2:
-//        message = "two";
-//        break;
-
-//    case 3:
-//        message = "error";
-//        break;
-//}
-
-
-//Console.WriteLine($"the number is {message}");
-
-
+﻿using System;
+using System.ComponentModel.Design;
+using System.Diagnostics.Metrics;
+using System.Reflection;
+using System.Xml.Linq;
 using static System.Net.Mime.MediaTypeNames;
 
-string message;
+System.Random random = new System.Random();
 
-var myCards = 20;
+int cardValue = 0;
 
-var houseCards = 20;
+string cardString = "";
 
 string switchControl = "menu";
 
-int num = 0;
+string message = "";
+
+string finalMessage = "You want to play again type 21 and enter.\n" +
+    "if you want to quit type exit and enter";
+
+int playerCards = 0;
+
+int houseCards = 0;
+
+int randomNumber = 0;
+
 
 List<string> newDeck = new List<string>
 {
@@ -149,71 +137,154 @@ List<string> cardsToDraw = new List<string>
     "King of Clubs"
 };
 
+List<string> cardsPlayer = new List<string>();
 
-System.Random random = new System.Random();
-//num = random.Next(0,103);
-//cardsToDraw.RemoveAt(num);
-//num = random.Next(0,103);
-//cardsToDraw.RemoveAt(num);
-cardsToDraw.RemoveAt(0);
-cardsToDraw.RemoveAt(0);
+List<string> cardsHouse = new List<string>();
 
-Console.WriteLine("there are : {0} in the deck\n", cardsToDraw.Count);
-
-
-foreach (var item in cardsToDraw)
+BegginTheGame();
+foreach (var item in cardsHouse)
 {
-    Console.WriteLine(item);
+    Console.WriteLine($"{item} ");
 }
 
-cardsToDraw = newDeck;
-Console.WriteLine("\nthere are : {0} in the deck",cardsToDraw.Count);
-Console.WriteLine(cardsToDraw.Contains("Jack of Spades"));
+foreach (var item in cardsPlayer)
+{
+    Console.WriteLine($"{item} ");
+}
 
 
+void DrawACard()
+{
+    randomNumber = random.Next(0, cardsToDraw.Count);
+    cardString = cardsToDraw[randomNumber];
+    Converter();
+    cardsToDraw.RemoveAt(randomNumber);
+    Console.WriteLine(cardValue);
+}
 
-/*
+void Converter() 
+{
+    cardValue = 0;
+
+    if (cardString.Contains("As"))
+    {
+        if( (playerCards + 11) > 21 )
+        {
+            cardValue += 1;
+        }
+        else
+        {
+            cardValue += 11;
+        }
+        Console.WriteLine(playerCards);
+    }
+    else if (cardString.Contains("Jack") || cardString.Contains("Queen") || cardString.Contains("King") || cardString.Contains("10"))
+    {
+        cardValue += 10;
+        Console.WriteLine(playerCards);
+    }
+    else
+    {
+        string character = cardString.Substring(0, 1);
+        cardValue += int.Parse(character);
+        Console.WriteLine(playerCards);
+    }
+}
+void BegginTheGame()
+{
+    var counter = 0;
+    while (counter < 2)
+    {
+        DrawACard();
+        cardsPlayer.Add(cardString);
+        playerCards += cardValue;
+
+        DrawACard();
+        cardsHouse.Add(cardString);
+        houseCards += cardValue;
+        counter++;
+    }
+
+}
+
+
+void endMessage()
+{
+    Console.WriteLine(finalMessage);
+    switchControl = Console.ReadLine();
+}
+
+void TheWinnerIs() 
+{
+    if (playerCards <= 21 && (playerCards > houseCards))
+    {
+        message = "you win the game\n";
+        endMessage();
+    }
+
+    else if (playerCards >= 22)
+    {
+        message = "you have exceed the limit\n";
+        endMessage();
+    }
+
+    else
+    {
+        message = "the house win agains you\n";
+        endMessage();
+    }
+}
+
+void Cleaning()
+{
+    cardsToDraw = newDeck;
+    cardsPlayer.Clear();
+    cardsHouse.Clear();
+    playerCards = 0;
+    houseCards = 0;
+}
+
+
 while (true)
 {
+
     switch (switchControl)
     {
+
         case "menu":
-            Console.WriteLine("Welcome to the C A S I N O ");
-            Console.WriteLine("type 21 to play black jack");
-            Console.WriteLine("or type exit to quit");
+            Console.WriteLine("Welcome to the C A S I N O");
+            Console.WriteLine("Type 21 and enter to play black jack");
+            Console.WriteLine("Or type exit and enter to quit");
+            switchControl = Console.ReadLine();
+            break;
+
+        case "how to play":
+            Console.WriteLine("\nTo play 21 black jack you have to know:\n" +
+            "The one who has come the closes to the 21 without passing it wins the match\n" +
+            "in a tie the house always wins\n" +
+            "at the beggining of the match you and your opponent have 2 cards in the table\n" +
+            "the score of the cards is: from 2 to 10 they have the value of the card\n" +
+            "the cards jack,queen and king all 3 have the same value 10\n" +
+            "the As equals 1 or 11 depend if you pass 21 with 11 their value going to be 1");
+
+            Console.WriteLine("\nType 21 and enter to play black jack");
+            Console.WriteLine("Or type exit and enter to quit");
             switchControl = Console.ReadLine();
             break;
 
         case "21":
+            Cleaning();
+            BegginTheGame();
+
             do
             {
                 
-                System.Random random = new System.Random();
-                num = random.Next(0, 103);
-                Console.WriteLine("Take your card");
-                Console.WriteLine($"Your card is : {num}");
+                Console.WriteLine("Take your cards");
+                Console.WriteLine($"Your card is : {randomNumber}");
 
             } while (Console.ReadLine() == "yes");
 
-            if (myCards <= 21 && (myCards > houseCards))
-            {
-                message = "you win the game";
-                switchControl = "menu";
-            }
 
-            else if (myCards >= 22)
-            {
-                message = "you have exceed the limit";
-                switchControl = "menu";
-            }
-
-            else
-            {
-                message = "the house win agains you";
-                switchControl = "menu";
-            }
-
-            Console.WriteLine(message);
             break;
 
         case "exit":
@@ -221,9 +292,10 @@ while (true)
             break;
             
         default:
-            Console.WriteLine("error");
+            Console.WriteLine("\nERROR GOING BACK TO THE MAIN MENU\n");
+            switchControl = "menu";
             break;
     }
 }
-*/
+
 
