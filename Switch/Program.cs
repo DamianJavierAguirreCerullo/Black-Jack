@@ -15,8 +15,9 @@ string cardString = "";
 
 string switchControl = "menu";
 
-string finalMessage = "You want to play again type 21 and enter.\n" +
-    "if you want to quit type exit and enter";
+string finalMessage = "\nIf You want to play again type 21 and enter.\n" +
+    "If you want to go to the menu type menu and enter\n" +
+    "If quit type exit and enter";
 
 int playerCards = 0;
 
@@ -218,12 +219,6 @@ void BegginTheGame()
 
 }
 
-void endMessage()
-{
-    Console.WriteLine(finalMessage);
-    switchControl = Console.ReadLine();
-}
-
 void TheWinnerIs() 
 {
     if (houseCards == 21)
@@ -251,6 +246,7 @@ void Cleaning()
     houseCards = 0;
     playerPass = false;
     housePass = false;
+    drawControlString = "yes";
 }
 
 
@@ -289,7 +285,7 @@ while (true)
                 ShowCards();
 
 
-                    while (playerCards <= 20 && drawControlString == "yes")
+                    while (playerCards <= 20 && drawControlString == "yes" && !housePass)
                     {
                         Console.WriteLine("You want to take another card? type yes to draw another card\n");
                         drawControlString = Console.ReadLine();
@@ -301,7 +297,8 @@ while (true)
                                 DrawACard();
                                 cardsHouse.Add(cardString);
                                 houseCards += cardValue;
-                            }
+                                ShowCards();
+                    }
                             else
                             {
                                 housePass = true;
@@ -330,8 +327,7 @@ while (true)
 
             TheWinnerIs();
             Cleaning();
-            Console.WriteLine("\nIf you want to go to the menu type menu and enter\n" +
-                "If you want to play again type 21 and enter");
+            Console.WriteLine($"{finalMessage}");
             switchControl = Console.ReadLine();
             break;
 
