@@ -9,15 +9,11 @@ System.Random random = new System.Random();
 
 int cardValue = 0;
 
-string drawControlString = "";
-
-int drawControlNumber = 0;
+string drawControlString = "yes";
 
 string cardString = "";
 
 string switchControl = "menu";
-
-string message = "";
 
 string finalMessage = "You want to play again type 21 and enter.\n" +
     "if you want to quit type exit and enter";
@@ -148,6 +144,23 @@ List<string> cardsPlayer = new List<string>();
 
 List<string> cardsHouse = new List<string>();
 
+void ShowCards()
+{
+    Console.WriteLine("\nPlayer Cards\n");
+    foreach (var item in cardsPlayer)
+    {
+        Console.WriteLine($"{item} player");
+    }
+    Console.WriteLine($"\nYou have: {playerCards}\n");
+
+    Console.WriteLine("House Cards\n");
+    foreach (var item in cardsHouse)
+    {
+        Console.WriteLine($"{item} house");
+    }
+    Console.WriteLine($"\nThe house have: {houseCards}\n");
+}
+
 
 void NeverTheSame()
 {
@@ -213,22 +226,19 @@ void endMessage()
 
 void TheWinnerIs() 
 {
-    if (playerCards <= 21 && (playerCards > houseCards))
+    if (houseCards == 21)
     {
-        message = "you win the game\n";
-        endMessage();
+        Console.WriteLine("\nthe house win agains you\n");
     }
 
-    else if (playerCards >= 22)
+    else if ((playerCards >= 22 || houseCards >= playerCards) && houseCards <= 20)
     {
-        message = "you have exceed the limit\n";
-        endMessage();
+        Console.WriteLine("\nthe house win agains you\n");
     }
 
     else
     {
-        message = "the house win agains you\n";
-        endMessage();
+        Console.WriteLine("\nyou win the game\n");
     }
 }
 
@@ -251,8 +261,7 @@ while (true)
     {
 
         case "menu":
-            Cleaning();
-            BegginTheGame();
+
             Console.WriteLine("Welcome to the C A S I N O");
             Console.WriteLine("Type 21 and enter to play black jack");
             Console.WriteLine("Or type exit and enter to quit");
@@ -274,72 +283,56 @@ while (true)
             break;
 
         case "21":
+            BegginTheGame();
+            while (!housePass && !playerPass) {
+
+                ShowCards();
 
 
-            while(!housePass && !playerPass) {
-
-                Console.WriteLine("\nPlayer Cards\n");
-                foreach (var item in cardsPlayer)
-                {
-                    Console.WriteLine($"{item} player");
-                }
-                Console.WriteLine($"\nYou have: {playerCards}\n");
-
-
-                Console.WriteLine("House Cards\n");
-                foreach (var item in cardsHouse)
-                {
-                    Console.WriteLine($"{item} house");
-                }
-                Console.WriteLine($"\nThe house have: {houseCards}\n");
-
-                Console.WriteLine("if you want to draw another card type 1 and enter" +
-                                  "if you want to pass type anything and enter");
-                drawControlString = Console.ReadLine();
-                drawControlNumber = int.Parse(drawControlString);
-
-                    if (drawControlNumber != 1 )
+                    while (playerCards <= 20 && drawControlString == "yes")
                     {
-                    playerPass = true;
-                    }
-                    else
-                    {
-                    DrawACard();
-                    cardsPlayer.Add(cardString);
-                    playerCards += cardValue;
-                    }
+                        Console.WriteLine("You want to take another card? type yes to draw another card\n");
+                        drawControlString = Console.ReadLine();
 
-                if (houseCards <= 15)
-                {
-                    DrawACard();
-                    cardsHouse.Add(cardString);
-                    houseCards += cardValue;
-                }
-                else
-                {
-                    housePass = true;
+
+
+                            if (houseCards <= 15)
+                            {
+                                DrawACard();
+                                cardsHouse.Add(cardString);
+                                houseCards += cardValue;
+                            }
+                            else
+                            {
+                                housePass = true;
+                            }
+
+                            if (drawControlString == "yes")
+                            {
+                                DrawACard();
+                                cardsPlayer.Add(cardString);
+                                playerCards += cardValue;
+                                ShowCards();
+                            }
+
+                            else if (drawControlString != "yes")
+                            {
+                                playerPass = true;
+                            }
                 }
 
-                if (!housePass && !playerPass)
-                {
-                    if (playerCards <= 21 && (playerCards > houseCards))
-                    {
-                        message = "you win the game\n";
-                    }
 
-                    else if (playerCards >= 22)
-                    {
-                        message = "you have exceed the limit\n";
-                    }
 
-                    else
-                    {
-                        message = "the house win agains you\n";
-                    }
-                }
+
+
 
             }
-            
+
+            TheWinnerIs();
+            Cleaning();
+            Console.WriteLine("\nIf you want to go to the menu type menu and enter\n" +
+                "If you want to play again type 21 and enter");
+            switchControl = Console.ReadLine();
             break;
 
 
