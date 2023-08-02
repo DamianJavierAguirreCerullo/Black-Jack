@@ -9,7 +9,7 @@ System.Random random = new System.Random();
 
 int cardValue = 0;
 
-string drawControlString = "";
+string drawControlString = "yes";
 
 string cardString = "";
 
@@ -294,7 +294,7 @@ while (true)
             break;
 
         case "21":
-
+            Console.Clear();
             Cleaning();
             BegginTheGame();
             ShowCards();
@@ -304,7 +304,9 @@ while (true)
                 HouseLogic();
 
 
-                    while (playerCards <= 20 && drawControlString == "yes")
+                    while (playerCards <= 20   &&
+                    drawControlString == "yes" &&
+                    houseCards != 21             )
                     {
                         Console.WriteLine("You want to take another card? type yes to draw another card\n");
                         drawControlString = Console.ReadLine();
