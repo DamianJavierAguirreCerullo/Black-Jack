@@ -9,7 +9,7 @@ System.Random random = new System.Random();
 
 int cardValue = 0;
 
-string drawControlString = "yes";
+string drawControlString = "";
 
 string cardString = "";
 
@@ -237,6 +237,21 @@ void TheWinnerIs()
     }
 }
 
+void HouseLogic()
+{
+    if (houseCards <= 15)
+    {
+        DrawACard();
+        cardsHouse.Add(cardString);
+        houseCards += cardValue;
+        ShowCards();
+    }
+    else
+    {
+        housePass = true;
+    }
+}
+
 void Cleaning()
 {
     cardsToDraw = newDeck;
@@ -250,7 +265,7 @@ void Cleaning()
 }
 
 
-while (true)
+while (true)        
 {
 
     switch (switchControl)
@@ -279,50 +294,42 @@ while (true)
             break;
 
         case "21":
+
+            Cleaning();
             BegginTheGame();
+            ShowCards();
+
             while (!housePass && !playerPass) {
 
-                ShowCards();
+                HouseLogic();
 
 
-                    while (playerCards <= 20 && drawControlString == "yes" && !housePass)
+                    while (playerCards <= 20 && drawControlString == "yes")
                     {
                         Console.WriteLine("You want to take another card? type yes to draw another card\n");
                         drawControlString = Console.ReadLine();
 
 
+                             if (houseCards >=15 && playerCards > houseCards)
+                            {
+                                playerPass = true;
 
-                            if (houseCards <= 15)
-                            {
-                                DrawACard();
-                                cardsHouse.Add(cardString);
-                                houseCards += cardValue;
-                                ShowCards();
-                    }
-                            else
-                            {
-                                housePass = true;
                             }
 
-                            if (drawControlString == "yes")
+                            else if (drawControlString != "yes" || houseCards == 21)
+                            {
+                                playerPass = true;
+                            }
+
+                            else if(drawControlString == "yes")
                             {
                                 DrawACard();
                                 cardsPlayer.Add(cardString);
                                 playerCards += cardValue;
                                 ShowCards();
                             }
-
-                            else if (drawControlString != "yes")
-                            {
-                                playerPass = true;
-                            }
                 }
-
-
-
-
-
-
+                HouseLogic();
             }
 
             TheWinnerIs();
